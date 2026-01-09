@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
+import Main from "@/layouts/Main.astro";
 import { SITE } from "@/config";
 import { getClientPath } from "@/utils/getPath";
 import { Image } from "astro:assets";
@@ -21,19 +22,11 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
 ---
 
 <Layout title={`Clients | ${SITE.title}`}>
   <Header />
-  <main id="main-content" class="app-layout pb-12" data-backurl={backUrl}>
-    <section class="pt-8 pb-6">
-      <h1 class="text-2xl font-bold sm:text-3xl">Clients</h1>
-      <p class="mt-2 text-foreground/80">
-        Podcasts and shows I've had the pleasure of working with.
-      </p>
-    </section>
-
+  <Main pageTitle="Clients" pageDesc="Podcasts and shows I've had the pleasure of working with.">
     <ul class="grid gap-6 sm:grid-cols-2">
       {page.data.map(client => (
         <li class="rounded-lg border border-border p-4 hover:bg-muted/50 transition-colors">
@@ -64,16 +57,6 @@ const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
     <div class="mt-8">
       <Pagination {page} />
     </div>
-  </main>
+  </Main>
   <Footer />
 </Layout>
-
-<script>
-  document.addEventListener("astro:page-load", () => {
-    const mainContent = document.querySelector("#main-content");
-    const backUrl = mainContent?.getAttribute("data-backurl");
-    if (backUrl) {
-      sessionStorage.setItem("backUrl", backUrl);
-    }
-  });
-</script>

@@ -1,0 +1,142 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
+import BackButton from "@/components/BackButton.astro";
+import { getClientPath } from "@/utils/getPath";
+import { SITE } from "@/config";
+import { Image } from "astro:assets";
+
+type Props = {
+  client: CollectionEntry<"clients">;
+};
+
+const { client } = Astro.props;
+
+const {
+  title,
+  description,
+  ogImage: initOgImage,
+  pubDatetime,
+  modDatetime,
+  websiteUrl,
+  applePodcastUrl,
+  youtubeChannelUrl,
+  socialMediaUrl,
+  host1Name,
+  host2Name,
+  host3Name,
+  podcastArtwork,
+} = client.data;
+
+const { Content } = await render(client);
+
+let ogImageUrl: string | undefined;
+
+if (typeof initOgImage === "string") {
+  ogImageUrl = initOgImage;
+} else if (initOgImage?.src) {
+  ogImageUrl = initOgImage.src;
+}
+
+if (!ogImageUrl && SITE.dynamicOgImage) {
+  ogImageUrl = `${getClientPath(client.id, client.filePath)}/index.png`;
+}
+
+const ogImage = ogImageUrl
+  ? new URL(ogImageUrl, Astro.url.origin).href
+  : undefined;
+
+const layoutProps = {
+  title: `${title} | ${SITE.title}`,
+  description,
+  pubDatetime,
+  modDatetime,
+  ogImage,
+  scrollSmooth: true,
+};
+
+// Collect host names into an array for easy rendering
+const hosts = [host1Name, host2Name, host3Name].filter(Boolean);
+
+// Collect links for rendering
+const links = [
+  { label: "Website", url: websiteUrl },
+  { label: "Apple Podcasts", url: applePodcastUrl },
+  { label: "YouTube", url: youtubeChannelUrl },
+  { label: "Social Media", url: socialMediaUrl },
+].filter(link => link.url);
+---
+
+<Layout {...layoutProps}>
+  <Header />
+  <BackButton />
+  <main
+    id="main-content"
+    class:list={["app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
+  >
+    <h1 class="inline-block text-2xl font-bold text-accent sm:text-3xl">
+      {title}
+    </h1>
+
+    <Datetime {pubDatetime} {modDatetime} size="lg" class="my-2" />
+
+    <div class="flex flex-col sm:flex-row gap-6 mt-4">
+      {podcastArtwork && (
+        <Image
+          src={podcastArtwork}
+          alt={`${title} artwork`}
+          width={200}
+          height={200}
+          class="rounded-lg object-cover flex-shrink-0"
+        />
+      )}
+      <div>
+        <p class="text-lg text-foreground/80">{description}</p>
+
+        {hosts.length > 0 && (
+          <div class="mt-4">
+            <h2 class="text-lg font-semibold">Hosts</h2>
+            <ul class="mt-2 list-disc list-inside">
+              {hosts.map(host => (
+                <li>{host}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+
+    {links.length > 0 && (
+      <div class="mt-6">
+        <h2 class="text-lg font-semibold">Links</h2>
+        <ul class="mt-2 flex flex-wrap gap-4">
+          {links.map(link => (
+            <li>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-accent underline hover:opacity-75"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <hr class="my-8 border-dashed" />
+
+    <article
+      id="article"
+      class="app-prose mt-8 w-full max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
+    >
+      <Content />
+    </article>
+  </main>
+  <Footer />
+</Layout>

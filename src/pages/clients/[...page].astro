@@ -1,0 +1,79 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Pagination from "@/components/Pagination.astro";
+import { SITE } from "@/config";
+import { getClientPath } from "@/utils/getPath";
+import { Image } from "astro:assets";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const clients = await getCollection("clients", ({ data }) => !data.draft);
+  
+  // Sort by pubDatetime descending (newest first)
+  const sortedClients = clients.sort(
+    (a, b) => b.data.pubDatetime.getTime() - a.data.pubDatetime.getTime()
+  );
+
+  return paginate(sortedClients, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
+---
+
+<Layout title={`Clients | ${SITE.title}`}>
+  <Header />
+  <main id="main-content" class="app-layout pb-12" data-backurl={backUrl}>
+    <section class="pt-8 pb-6">
+      <h1 class="text-2xl font-bold sm:text-3xl">Clients</h1>
+      <p class="mt-2 text-foreground/80">
+        Podcasts and shows I've had the pleasure of working with.
+      </p>
+    </section>
+
+    <ul class="grid gap-6 sm:grid-cols-2">
+      {page.data.map(client => (
+        <li class="rounded-lg border border-border p-4 hover:bg-muted/50 transition-colors">
+          <a href={getClientPath(client.id, client.filePath)} class="flex gap-4">
+            {client.data.podcastArtwork && (
+              <Image
+                src={client.data.podcastArtwork}
+                alt={`${client.data.title} artwork`}
+                width={80}
+                height={80}
+                class="rounded-lg object-cover flex-shrink-0"
+              />
+            )}
+            <div>
+              <h2 class="text-lg font-semibold text-accent">{client.data.title}</h2>
+              <p class="mt-1 text-sm text-foreground/70">{client.data.description}</p>
+              {(client.data.host1Name || client.data.host2Name || client.data.host3Name) && (
+                <p class="mt-2 text-xs text-foreground/60">
+                  Hosted by: {[client.data.host1Name, client.data.host2Name, client.data.host3Name].filter(Boolean).join(", ")}
+                </p>
+              )}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-8">
+      <Pagination {page} />
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const mainContent = document.querySelector("#main-content");
+    const backUrl = mainContent?.getAttribute("data-backurl");
+    if (backUrl) {
+      sessionStorage.setItem("backUrl", backUrl);
+    }
+  });
+</script>

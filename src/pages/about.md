@@ -3,35 +3,22 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+Lemon Productions is a podcast studio based in Saskatoon, Saskatchewan run by me – Chris Enns. Helping individuals and businesses get off the ground and onto the web is what drives me and why I love running my own business.
 
-![Astro Paper](public/astropaper-og.jpg)
+I published my first podcast in 2009 and with 2,000+ podcast episodes produced, recorded, edited, and published into the world since then, I’m just as excited about podcasting as when I started.
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+I love building getting to work in audio & video with clients. It’s come full circle to what I had hoped to do when I started Lemon Productions in 2006.
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+## Where You Can Find Me Online
 
-## Features
+I’m most active on Mastodon or [Threads](https://www.threads.com/@ichrisv2) on my personal accounts, but you can also find me [@LemonPodcasting on Threads](https://www.threads.com/@lemonpodcasting).
 
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
+I post to Instagram @[LemonPodcasting](https://www.instagram.com/lemonpodcasting/), live stream [on my Twitch channel](https://www.lemonproductions.ca/live), and [have a YouTube channel](https://www.youtube.com/c/lemonproductionsca) full of Mac audio tips and tricks with over 1,000 subscribers.
 
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
+I also write a weekly newsletter called [Life as a Lemon](https://buttondown.email/lemoncasting).
 
-and so much more.
+## Who I Work For
 
-## Show your support
+When you’re hiring Chris & Lemon Productions, it’s kind of like you’re hiring a team of 5. I don’t usually bring all of them to meetings, let my oldeset write proposals, or let my 2 youngest edit podcasts — but helping you succeed in whatever you’ve hired me to do means I get to transfer that success back to my family.
 
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
-
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
-
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
-
-Kyay zuu! 🙏🏼
+By choosing to work with me, you’re supporting a Saskatoon family. And we thank you for that.

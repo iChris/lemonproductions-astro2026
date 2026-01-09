@@ -1,4 +1,4 @@
-import { BLOG_PATH } from "@/content.config";
+import { BLOG_PATH, CLIENTS_PATH } from "@/content.config";
 import { slugifyStr } from "./slugify";
 
 /**
@@ -34,3 +34,36 @@ export function getPath(
 
   return [basePath, ...pathSegments, slug].join("/");
 }
+
+/**
+ * Get full path of a client
+ * @param id - id of the client (aka slug)
+ * @param filePath - the client full file location
+ * @param includeBase - whether to include `/clients` in return value
+ * @returns client path
+ */
+export function getClientPath(
+  id: string,
+  filePath: string | undefined,
+  includeBase = true
+) {
+  const pathSegments = filePath
+    ?.replace(CLIENTS_PATH, "")
+    .split("/")
+    .filter(path => path !== "")
+    .filter(path => !path.startsWith("_"))
+    .slice(0, -1)
+    .map(segment => slugifyStr(segment));
+
+  const basePath = includeBase ? "/clients" : "";
+
+  const clientId = id.split("/");
+  const slug = clientId.length > 0 ? clientId.slice(-1) : clientId;
+
+  if (!pathSegments || pathSegments.length < 1) {
+    return [basePath, slug].join("/");
+  }
+
+  return [basePath, ...pathSegments, slug].join("/");
+}
+

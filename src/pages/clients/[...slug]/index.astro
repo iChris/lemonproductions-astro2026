@@ -1,0 +1,23 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import ClientDetails from "@/layouts/ClientDetails.astro";
+import { getClientPath } from "@/utils/getPath";
+
+type Props = {
+  client: CollectionEntry<"clients">;
+};
+
+export async function getStaticPaths() {
+  const clients = await getCollection("clients", ({ data }) => !data.draft);
+  const clientResult = clients.map(client => ({
+    params: { slug: getClientPath(client.id, client.filePath, false) },
+    props: { client },
+  }));
+
+  return clientResult;
+}
+
+const { client } = Astro.props;
+---
+
+<ClientDetails client={client} />

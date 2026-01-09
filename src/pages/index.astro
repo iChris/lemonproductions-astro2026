@@ -11,12 +11,18 @@ import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
+import { getClientPath } from "@/utils/getPath";
+import { Image } from "astro:assets";
 
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+
+// Get featured clients
+const clients = await getCollection("clients", ({ data }) => !data.draft);
+const featuredClients = clients.filter(({ data }) => data.featured);
 ---
 
 <Layout>
@@ -24,48 +30,78 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Mingalaba
+        Getting Your Voice Into the World
       </h1>
-      <a
-        target="_blank"
-        href="/rss.xml"
-        class="inline-block"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="scale-125 stroke-accent stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
 
-      <p>
-        AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro
-        blog theme. This theme follows best practices and provides accessibility
-        out of the box. Light and dark mode are supported by default. Moreover,
-        additional color schemes can also be configured.
+      <h2 class="text-2xl font-semibold tracking-wide">
+        Why Hire a Podcast Editor? 
+      </h2>
+      <p>So when you’re recording your podcast, you can say “Hey Chris – edit that part out!”
       </p>
-      <p class="mt-2">
-        Read the blog posts or check
-        <LinkButton
-          class="underline decoration-dashed underline-offset-4 hover:text-accent"
-          href="https://github.com/satnaing/astro-paper#readme"
-        >
-          README
-        </LinkButton> for more info.
+      <p class="flex justify-center">
+        <audio controls>
+          <source src="https://www.lemonproductions.ca/wp-content/uploads/2021/06/Client-Quotes-2021-Website-Edition.mp3" type="audio/mpeg">
+        </audio>
+      </p>
+      <p>
+        Play the audio above to hear my clients in their own words asking me to edit, remove, or add things in to their podcast without having to make a note, or remember to go back and do it themselves.
       </p>
       {
         // only display if at least one social link is enabled
         SOCIALS.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Social Links:</div>
+            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Find me elsewhere:</div>
             <Socials />
           </div>
         )
       }
     </section>
+
+    {
+      featuredClients.length > 0 && (
+        <section
+          id="featured-clients"
+          class:list={[
+            "pt-12 pb-6",
+            "border-b border-border",
+          ]}
+        >
+          <h2 class="text-2xl font-semibold tracking-wide">Featured Clients</h2>
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+            {featuredClients.map(client => (
+              <li class="rounded-lg border border-border p-4 hover:bg-muted/50 transition-colors">
+                <a href={getClientPath(client.id, client.filePath)} class="flex gap-4">
+                  {client.data.podcastArtwork && (
+                    <Image
+                      src={client.data.podcastArtwork}
+                      alt={`${client.data.title} artwork`}
+                      width={80}
+                      height={80}
+                      class="rounded-lg object-cover flex-shrink-0"
+                    />
+                  )}
+                  <div>
+                    <h3 class="text-lg font-semibold text-accent">{client.data.title}</h3>
+                    <p class="mt-1 text-sm text-foreground/70">{client.data.description}</p>
+                    {(client.data.host1Name || client.data.host2Name || client.data.host3Name) && (
+                      <p class="mt-2 text-xs text-foreground/60">
+                        Hosted by: {[client.data.host1Name, client.data.host2Name, client.data.host3Name].filter(Boolean).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-6 text-center">
+            <LinkButton href="/clients/">
+              All Clients
+              <IconArrowRight class="inline-block rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+        </section>
+      )
+    }
 
     {
       featuredPosts.length > 0 && (
@@ -76,7 +112,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
             { "border-b border-border": recentPosts.length > 0 },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Featured Blog Posts</h2>
           <ul>
             {featuredPosts.map(data => (
               <Card variant="h3" {...data} />
@@ -89,7 +125,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     {
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Recent Blog Posts</h2>
           <ul>
             {recentPosts.map(
               (data, index) =>
